@@ -1,0 +1,36 @@
+#To load all the images saved in jpg extension from a particular folder
+for files in os.listdir(path):
+    if files.endswith('.jpg'):
+        im_path.append(os.path.join(path,files))
+    else:
+        pass
+print(im_path)
+
+# Read images sequentially and convert them to grayscale
+for n in range(0,len(im_path)):
+    im.append(cv2.imread(im_path[n],0))
+    cv2.imshow("%d"%n,im[n])
+    cv2.waitKey(0)
+
+#Generate histogram equalized images
+im_histeqd.append(cv2.equalizeHist(im[n]))
+cv2.imshow("Hist equalized image %d" %n,im_histeqd[n])
+cv2.waitKey(0)
+#Threshold and binarise image for easier segmentation
+ret,thresh1 = cv2.threshold(im_histeqd[0],90,128,cv2.THRESH_BINARY_INV)
+cv2.imshow("Threshold1",thresh1)
+cv2.waitKey(0)
+
+#Find and draw contours
+contours, hierarchy = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+cv2.imshow("AC",thresh1)
+cv2.waitKey(0)
+#cv2.destroyAllWindows()
+print("Number of Contours found = " + str(len(contours)))
+
+# Draw all contours
+# -1 signifies drawing all contours
+cv2.drawContours(thresh1, contours, -1, (0, 255, 0), 3)
+cv2.imshow('Contours', thresh1)
+cv2.waitKey(0)
+
